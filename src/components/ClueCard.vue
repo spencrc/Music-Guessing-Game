@@ -68,7 +68,7 @@ export default defineComponent({
 
       this.progress = 0
       //this.opacity = 0.3
-      if (raf) cancelAnimationFrame(raf)
+      if (raf) cancelAnimationFrame(raf) //code taken from https://github.com/VilleOlof/vyletponlde/blob/main/frontend/src/lib/AudioCard.svelte
       const duration = this.time! * 1000
       const startTime = performance.now()
       const tick = (time: number) => {
