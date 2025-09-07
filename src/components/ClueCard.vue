@@ -1,5 +1,6 @@
 <template>
   <div class="clue" :class="{ disabled: isDisabled }">
+    <div class="progress-fill" :style="{ transform: `scaleX(${progress})`, opacity: opacity}"></div>
     <div class="features">
       <button class="play" @click="play">PLAY</button>
       <div class="input-frame" :class="{ wrong: isWrong, skipped: isSkipped, correct: isCorrect }">
@@ -25,6 +26,8 @@ import { CLUES } from '@/config'
 import songs from '@/songs'
 import eventBus from '@/event-bus'
 
+let raf: number | null = null;
+
 export default defineComponent({
   props: {
     label: String,
@@ -36,6 +39,8 @@ export default defineComponent({
       videoId: '',
       startTime: 0,
       endDelay: 0,
+      progress: 0,
+      opacity: 0.3,
 
       skip: true,
       currentGuess: '',
@@ -60,6 +65,28 @@ export default defineComponent({
   methods: {
     play() {
       eventBus.$emit('playSong', { startTime: this.startTime, endDelay: this.endDelay })
+
+      this.progress = 0
+      //this.opacity = 0.3
+      if (raf) cancelAnimationFrame(raf)
+      const duration = this.time! * 1000
+      const startTime = performance.now()
+      const tick = (time: number) => {
+        const elapsed = time - startTime
+        if (elapsed > duration) {
+          this.progress = 1
+          // this.opacity = 0.3 - (elapsed - duration) / 1000;
+          // if (this.opacity <= 0) {
+          //   this.opacity = 0
+          //   return
+          // }
+          raf = requestAnimationFrame(tick)
+          return
+        }
+        this.progress = elapsed / duration
+        raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
     },
     submit() {
       console.log('Guess:', this.currentGuess)
@@ -90,6 +117,7 @@ export default defineComponent({
 
 <style scoped>
 .clue {
+  position: relative;
   overflow: hidden;
   background-color: lightgreen;
   border-radius: 0.5rem;
@@ -100,6 +128,16 @@ export default defineComponent({
   padding-bottom: 0.25rem;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.progress-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  transform-origin: left center; /* super important! */
+  z-index: 0;
 }
 
 .disabled {
@@ -113,6 +151,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  z-index: 10;
 }
 
 .input-frame {
@@ -187,5 +226,6 @@ button.submit:hover {
   font-size: 1rem;
   line-height: 1.25rem;
   font-weight: 700;
+  z-index: 10;
 }
 </style>
