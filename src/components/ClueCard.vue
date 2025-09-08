@@ -26,7 +26,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { CLUES } from '@/config'
-import songs from '@/songs'
 import eventBus from '@/event-bus'
 
 let raf: number | null = null
@@ -61,9 +60,8 @@ export default defineComponent({
       return Math.floor(Math.random() * (max - min + 1)) + min
     }
 
-    const song = songs['Deletee (Intro)']
     this.endDelay = this.time || 0
-    this.startTime = this.id === CLUES.length ? 0 : randomInteger(song.d * 0.1, song.d * 0.9)
+    this.startTime = this.id === CLUES.length ? 0 : randomInteger(209 * 0.1, 209 * 0.9)
   },
   methods: {
     play() {
