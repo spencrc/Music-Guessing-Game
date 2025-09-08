@@ -1,5 +1,5 @@
 <template>
-  <h1>DRAINEDLE</h1>
+  <h1 id="title">DRAINEDLE</h1>
   <div id="author-info">
     <h2>THE DAILY DRAIN GANG SONG GUESSING GAME</h2>
     <p>by <a href="https://github.com/spencrc">spencrc</a></p>
@@ -8,7 +8,7 @@
 </template>
 
 <style scoped>
-h1 {
+#title {
   font-size: 7rem;
 }
 
