@@ -1,7 +1,7 @@
 import express from "express";
 import serverless from "serverless-http";
 
-import helloRouter from "../../backend/hello.ts"
+import helloRouter from "../../backend/routes/hello.ts"
 
 const api = express();
 
