@@ -1,5 +1,5 @@
 import type { Config } from "@netlify/functions"
-import { supabase } from "../../backend/supabase"
+import supabase from "../../backend/supabase"
 import songs from "../../backend/songs.ts"
 
 const randomInteger = (min: number, max: number): number => {

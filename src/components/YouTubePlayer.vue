@@ -1,6 +1,6 @@
 <template>
   <YouTube
-    src="https://www.youtube.com/watch?v=sZYB5fFCiA4"
+    src=""
     width="300"
     height="300"
     @ready="onReady"
@@ -17,14 +17,31 @@ export default defineComponent({
   components: { YouTube },
   data() {
     return {
+      videoId: "ydpHpB_IKiw",
       player: null as typeof YouTube | null,
       endTimeout: null as ReturnType<typeof setTimeout> | null,
     }
   },
   mounted() {
     this.player = this.$refs.youtube as typeof YouTube
+  },
+  beforeUnmount() {
+    eventBus.$off('playSong')
+    if (this.endTimeout !== null) clearTimeout(this.endTimeout)
+  },
+  methods: {
+    async onReady() {
+      await fetch("/api/days/0/songs/1/id")
+        .then(res => res.text())
+        .then(id => {
+          this.player!.loadVideoById(id)
+        })
+        .catch(err => console.error(err))
 
-    eventBus.$on('playSong', ({ startTime, endDelay }) => {
+      this.player!.playVideo()
+      this.player!.pauseVideo()
+
+      eventBus.$on('playSong', ({ startTime, endDelay }) => {
       this.player!.pauseVideo()
       this.player!.seekTo(startTime, true)
       this.player!.playVideo()
@@ -40,15 +57,6 @@ export default defineComponent({
         this.player!.pauseVideo()
       }, endDelay * 1000)
     })
-  },
-  beforeUnmount() {
-    eventBus.$off('playSong')
-    if (this.endTimeout !== null) clearTimeout(this.endTimeout)
-  },
-  methods: {
-    onReady() {
-      this.player!.playVideo()
-      this.player!.pauseVideo()
     },
   },
 })
