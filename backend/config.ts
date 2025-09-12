@@ -10,3 +10,5 @@ export const CORS_HEADERS = {
     "Access-Control-Allow-Methods": "GET",
     "Access-Control-Allow-Headers": "Content-Type"
 }
+
+export const STARTING_DATE = new Date("2025-09-08")
