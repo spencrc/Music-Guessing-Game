@@ -18,7 +18,7 @@ const getSongName = async (day: number, song: number): Promise<string> => {
         .eq('day', targetDate.toISOString().split("T")[0])
         .single()
     if (error || !data) 
-        throw new Error(`No song ${song} found for day ${day}! The error is:`, error)
+        throw new Error(`No song ${song} found for day ${day}! Supabase error: ${error.message}`)
 
     return data[`song_${song}`]
 }
@@ -35,7 +35,7 @@ router.get("/:day/songs/:song/id", async (req, res) => {
         res.send(id)
     } catch (err) {
         console.error(err.message)
-        res.status(404).send("Song id not found")
+        res.status(404).send("Song not found")
     }
 })
 
@@ -48,7 +48,7 @@ router.get("/:day/songs/:song/name", async (req, res) => {
         res.send(songName)
     } catch (err) {
         console.error(err.message)
-        res.status(404).send("Song name not found")
+        res.status(404).send("Song not found")
     }
 })
 
@@ -74,7 +74,7 @@ router.get("/:day/clues", async (req, res) => {
         .single()
 
     if (error || !data) {
-        console.error(`No clues found for day ${day}! The error is:`, error)
+        console.error(`No clues found for day ${day}! Supabase error ${error.message}`)
         return res.status(404).send("Clues not found")
     }
 
