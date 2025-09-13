@@ -39,13 +39,28 @@ router.get("/:day/songs/:song/id", async (req, res) => {
     }
 })
 
-router.get("/:day/songs/:song/name", async (req, res) => {
+router.get("/:day/songs/:song/info", async (req, res) => {
     const day = +req.params.day
     const song = +req.params.song
 
     try {
         const songName = await getSongName(day, song)
         res.send(songName)
+    } catch (err) {
+        console.error(err.message)
+        res.status(404).send("Song not found")
+    }
+})
+
+router.get("/:day/songs/:song/guesses", async (req, res) => {
+    const day = +req.params.day
+    const song = +req.params.song
+    const guess = req.query.guess
+
+    try {
+        const songName = await getSongName(day, song)
+        const isCorrect = guess === songName
+        res.send(isCorrect)
     } catch (err) {
         console.error(err.message)
         res.status(404).send("Song not found")
