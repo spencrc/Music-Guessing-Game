@@ -1,8 +1,7 @@
 import express from "express";
 import serverless from "serverless-http";
 
-import helloRouter from "../../backend/routes/hello.ts"
-import songsRouter from "../../backend/routes/days.ts"
+import daysRouter from "../../backend/routes/days.ts"
 
 const api = express();
 
@@ -13,7 +12,6 @@ api.use((req, res, next) => {
     next()
 })
 
-api.use("/api/hello", helloRouter);
-api.use("/api/days", songsRouter);
+api.use("/api/days", daysRouter);
 
 export const handler = serverless(api);
