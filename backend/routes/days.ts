@@ -3,6 +3,12 @@ import supabase from "../supabase.ts"
 import { STARTING_DATE } from "../config.ts";
 import songs from "../songs.ts"
 
+export interface HistoryRow {
+    day: string,
+    [key: `song_${number}`]: string,
+    [key: `clue_${number}_start`]: number
+}
+
 const getTargetDate = (day: number): Date => {
     const targetDate = new Date(STARTING_DATE)
     targetDate.setDate(targetDate.getDate() + day)
@@ -16,7 +22,7 @@ const getSongName = async (day: number, song: number): Promise<string> => {
         .from('history')
         .select(`song_${song}`)
         .eq('day', targetDate.toISOString().split("T")[0])
-        .single()
+        .single<HistoryRow>()
     if (error || !data) 
         throw new Error(`No song ${song} found for day ${day}! Supabase error: ${error.message}`)
 
@@ -33,7 +39,7 @@ router.get("/:day/songs/:song/id", async (req, res) => {
         const songName = await getSongName(day, song)
         const id = songs[songName].id
         res.send(id)
-    } catch (err) {
+    } catch (err: any) {
         console.error(err.message)
         res.status(404).send("Song not found")
     }
@@ -46,7 +52,7 @@ router.get("/:day/songs/:song/info", async (req, res) => {
     try {
         const songName = await getSongName(day, song)
         res.send(songName)
-    } catch (err) {
+    } catch (err: any) {
         console.error(err.message)
         res.status(404).send("Song not found")
     }
@@ -61,7 +67,7 @@ router.get("/:day/songs/:song/guesses", async (req, res) => {
         const songName = await getSongName(day, song)
         const isCorrect = guess === songName
         res.send(isCorrect)
-    } catch (err) {
+    } catch (err: any) {
         console.error(err.message)
         res.status(404).send("Song not found")
     }
