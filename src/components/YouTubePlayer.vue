@@ -8,56 +8,51 @@
   />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import YouTube from 'vue3-youtube'
 import eventBus from '@/event-bus'
+import { ref, onBeforeUnmount } from 'vue'
 
-export default defineComponent({
-  components: { YouTube },
-  data() {
-    return {
-      videoId: "ydpHpB_IKiw",
-      player: null as typeof YouTube | null,
-      endTimeout: null as ReturnType<typeof setTimeout> | null,
-    }
-  },
-  mounted() {
-    this.player = this.$refs.youtube as typeof YouTube
-  },
-  beforeUnmount() {
-    eventBus.$off('playSong')
-    if (this.endTimeout !== null) clearTimeout(this.endTimeout)
-  },
-  methods: {
-    async onReady() {
-      await fetch("/api/days/0/songs/1/id")
-        .then(res => res.text())
-        .then(id => {
-          this.player!.loadVideoById(id)
-        })
-        .catch(err => console.error(err))
+const videoId = ref('ydpHpB_IKiw')
+const youtube = ref<InstanceType<typeof YouTube> | null>(null)
 
-      this.player!.playVideo()
-      this.player!.pauseVideo()
+let player: InstanceType<typeof YouTube> 
+let endTimeout: ReturnType<typeof setTimeout> | null = null
 
-      eventBus.$on('playSong', ({ startTime, endDelay }) => {
-      this.player!.pauseVideo()
-      this.player!.seekTo(startTime, true)
-      this.player!.playVideo()
+const onReady = async () => {
+  try {
+    const response = await fetch("/api/days/0/songs/1/id")
+    const id = await response.text()
+    player = youtube.value!
+    player.loadVideoById(id)
+    player.playVideo()
+    player.pauseVideo()
+
+    eventBus.$on('playSong', ({ startTime, endDelay }) => {
+      player.pauseVideo()
+      player.seekTo(startTime, true)
+      player.playVideo()
 
       if (!endDelay) return
 
-      if (this.endTimeout !== null) {
-        clearTimeout(this.endTimeout)
-        this.endTimeout = null
+      if (endTimeout !== null) {
+        clearTimeout(endTimeout)
+        endTimeout = null
       }
 
-      this.endTimeout = setTimeout(() => {
-        this.player!.pauseVideo()
+      endTimeout = setTimeout(() => {
+        player.pauseVideo()
       }, endDelay * 1000)
     })
-    },
-  },
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+onBeforeUnmount(() => {
+  eventBus.$off("playSong")
+  if (endTimeout) clearTimeout(endTimeout)
 })
+
 </script>
