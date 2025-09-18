@@ -1,6 +1,7 @@
 import type { Config } from "@netlify/functions"
-import supabase from "../../backend/supabase"
+import databaseClient from "../../backend/database/databaseClient.ts"
 import songs from "../../backend/songs.ts"
+import { HistoryRow } from "../../backend/types.ts"
 
 const randomInteger = (min: number, max: number): number => {
     min = Math.floor(min)
@@ -13,7 +14,7 @@ export default async (req: Request) => {
     const pickedSongs = songNames
         .sort(() => Math.random() - 0.5)
         .slice(0, 5)
-    const values = { day: new Date() }
+    const values = { day: new Date() } as HistoryRow
 
     let clueCount = 1
     for (let i = 0; i < pickedSongs.length; i++) {
@@ -28,7 +29,7 @@ export default async (req: Request) => {
         }
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await databaseClient
         .from("history")
         .insert([values])
     
