@@ -1,11 +1,5 @@
 <template>
-  <YouTube
-    src=""
-    width="300"
-    height="300"
-    @ready="onReady"
-    ref="youtube"
-  />
+  <YouTube src="" width="300" height="300" @ready="onReady" ref="youtube" />
 </template>
 
 <script setup lang="ts">
@@ -16,10 +10,10 @@ import { ref, onBeforeUnmount } from 'vue'
 const videoId = ref('ydpHpB_IKiw')
 const youtube = ref<InstanceType<typeof YouTube> | null>(null)
 
-let player: InstanceType<typeof YouTube> 
+let player: InstanceType<typeof YouTube>
 let endTimeout: ReturnType<typeof setTimeout> | null = null
 
-const handlePlaySong = ({ startTime, endDelay }: { startTime: number, endDelay?: number }) => {
+const handlePlaySong = ({ startTime, endDelay }: { startTime: number; endDelay?: number }) => {
   player.pauseVideo()
   player.seekTo(startTime, true)
   player.playVideo()
@@ -40,23 +34,21 @@ const onReady = async () => {
   try {
     player = youtube.value!
 
-    const response = await fetch("/api/days/0/songs/1/id")
+    const response = await fetch('/api/days/0/songs/1/id')
     const id = await response.text()
-    
+
     player.loadVideoById(id)
     player.playVideo()
     player.pauseVideo()
 
     eventBus.$on('playSong', handlePlaySong)
-
   } catch (err) {
     console.error(err)
   }
 }
 
 onBeforeUnmount(() => {
-  eventBus.$off("playSong")
+  eventBus.$off('playSong')
   if (endTimeout) clearTimeout(endTimeout)
 })
-
 </script>
