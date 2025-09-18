@@ -19,31 +19,35 @@ const youtube = ref<InstanceType<typeof YouTube> | null>(null)
 let player: InstanceType<typeof YouTube> 
 let endTimeout: ReturnType<typeof setTimeout> | null = null
 
+const handlePlaySong = ({ startTime, endDelay }: { startTime: number, endDelay?: number }) => {
+  player.pauseVideo()
+  player.seekTo(startTime, true)
+  player.playVideo()
+
+  if (!endDelay) return
+
+  if (endTimeout !== null) {
+    clearTimeout(endTimeout)
+    endTimeout = null
+  }
+
+  endTimeout = setTimeout(() => {
+    player.pauseVideo()
+  }, endDelay * 1000)
+}
+
 const onReady = async () => {
   try {
+    player = youtube.value!
+
     const response = await fetch("/api/days/0/songs/1/id")
     const id = await response.text()
-    player = youtube.value!
+    
     player.loadVideoById(id)
     player.playVideo()
     player.pauseVideo()
 
-    eventBus.$on('playSong', ({ startTime, endDelay }) => {
-      player.pauseVideo()
-      player.seekTo(startTime, true)
-      player.playVideo()
-
-      if (!endDelay) return
-
-      if (endTimeout !== null) {
-        clearTimeout(endTimeout)
-        endTimeout = null
-      }
-
-      endTimeout = setTimeout(() => {
-        player.pauseVideo()
-      }, endDelay * 1000)
-    })
+    eventBus.$on('playSong', handlePlaySong)
 
   } catch (err) {
     console.error(err)
