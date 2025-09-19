@@ -32,9 +32,7 @@ export default async (req: Request) => {
   if (error) {
     console.error('Database error:', error)
   } else {
-    console.log(
-      'Completed daily update! A new row of songs and clues has been added to the database',
-    )
+    console.log('Completed daily update! A new row of songs and clues has been added to the database')
   }
 }
 

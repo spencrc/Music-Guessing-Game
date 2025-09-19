@@ -1,9 +1,6 @@
 <template>
   <div class="clue" :class="{ disabled: isDisabled }">
-    <div
-      class="progress-fill"
-      :style="{ transform: `scaleX(${progress})`, opacity: opacity }"
-    ></div>
+    <div class="progress-fill" :style="{ transform: `scaleX(${progress})`, opacity: opacity }"></div>
     <div class="features">
       <button class="play" @click="play">PLAY</button>
       <div class="input-frame" :class="{ wrong: isWrong, skipped: isSkipped, correct: isCorrect }">

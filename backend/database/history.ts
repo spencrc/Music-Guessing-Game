@@ -8,10 +8,7 @@ const getTargetDateISO = (day: number): string => {
   return targetDate.toISOString().split('T')[0]
 }
 
-export const getHistoryByDay = async (
-  day: number,
-  selectArguments: string = '*',
-): Promise<HistoryRow | null> => {
+export const getHistoryByDay = async (day: number, selectArguments: string = '*'): Promise<HistoryRow | null> => {
   const dayISO = getTargetDateISO(day)
 
   const { data, error } = await databaseClient
