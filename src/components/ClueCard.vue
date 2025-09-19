@@ -24,6 +24,7 @@
 import { defineComponent } from 'vue'
 import { CLUES } from '@/config'
 import eventBus from '@/event-bus'
+import { usePlayerStore } from '@/stores/player'
 
 let raf: number | null = null
 
@@ -50,6 +51,7 @@ export default defineComponent({
       isSkipped: false,
       isWrong: false,
       isCorrect: false,
+      playerStore: usePlayerStore(),
     }
   },
   mounted() {
@@ -62,7 +64,10 @@ export default defineComponent({
   },
   methods: {
     play() {
-      eventBus.$emit('playSong', { startTime: this.startTime, endDelay: this.endDelay })
+      //eventBus.$emit('playSong', { startTime: this.startTime, endDelay: this.endDelay })
+      this.playerStore.setStartTime(this.startTime)
+      this.playerStore.setEndDelay(this.endDelay)
+      this.playerStore.togglePlaying()
 
       this.progress = 0
       //this.opacity = 0.3
