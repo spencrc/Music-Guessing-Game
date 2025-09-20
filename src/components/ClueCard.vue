@@ -27,8 +27,6 @@ import { usePlayerStore } from '@/stores/player'
 
 const playerStore = usePlayerStore()
 
-let raf: number | null = null
-
 const props = defineProps<{
   label?: string
   time?: number
@@ -51,6 +49,8 @@ const isSkipped = ref(false)
 const isWrong = ref(false)
 const isCorrect = ref(false)
 
+let raf: number | null = null
+
 onMounted(() => {
   function randomInteger(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min
@@ -66,7 +66,7 @@ const play = () => {
   playerStore.togglePlaying()
 
   progress.value = 0
-  //this.opacity = 0.3
+  opacity.value = 1
   if (raf) cancelAnimationFrame(raf) //code taken from https://github.com/VilleOlof/vyletponlde/blob/main/frontend/src/lib/AudioCard.svelte
   const duration = (props.time ?? 0) * 1000
   const start = performance.now()
@@ -74,11 +74,11 @@ const play = () => {
     const elapsed = time - start
     if (elapsed > duration) {
       progress.value = 1
-      // this.opacity = 0.3 - (elapsed - duration) / 1000;
-      // if (this.opacity <= 0) {
-      //   this.opacity = 0
-      //   return
-      // }
+      opacity.value = 1 - (elapsed - duration) / 300
+      if (opacity.value <= 0) {
+        opacity.value = 0
+        return
+      }
       raf = requestAnimationFrame(tick)
       return
     }
@@ -88,15 +88,24 @@ const play = () => {
   raf = requestAnimationFrame(tick)
 }
 
-const submit = () => {
+const submit = async () => {
   console.log('Guess:', currentGuess)
   hasGuessed.value = true
   if (skip.value) {
     isSkipped.value = true
     currentGuess.value = 'SKIPPED'
-  } else if (currentGuess.value === 'Deletee') {
-    isCorrect.value = true
-  } else {
+    return
+  }
+
+  try {
+    const response = await fetch(`/api/days/0/songs/1/guesses?=${currentGuess.value}`)
+    if (response) {
+      isCorrect.value = true
+      return
+    }
+  } catch (err) {
+    console.error(err)
+  } finally {
     isWrong.value = true
   }
 }
@@ -134,7 +143,7 @@ const onGuessChange = (event: Event) => {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: white;
+  background: #bbf6bb;
   transform-origin: left center; /* super important! */
   z-index: 0;
 }
