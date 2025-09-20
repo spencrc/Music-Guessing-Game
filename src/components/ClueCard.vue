@@ -20,101 +20,98 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { CLUES } from '@/config'
 import { usePlayerStore } from '@/stores/player'
 
+const playerStore = usePlayerStore()
+
 let raf: number | null = null
 
-export default defineComponent({
-  props: {
-    label: String,
-    time: Number,
-    id: Number,
-  },
-  data() {
-    return {
-      videoId: '',
-      startTime: 0,
-      endDelay: 0,
-      progress: 0,
-      opacity: 0.3,
+const props = defineProps<{
+  label?: string
+  time?: number
+  id?: number
+}>()
 
-      skip: true,
-      currentGuess: '',
-      buttonText: 'SKIP',
+const videoId = ref('')
+const startTime = ref(0)
+const endDelay = ref(0)
+const progress = ref(0)
+const opacity = ref(0.3)
 
-      isDisabled: false,
-      hasGuessed: false,
-      isSkipped: false,
-      isWrong: false,
-      isCorrect: false,
-      playerStore: usePlayerStore(),
-    }
-  },
-  mounted() {
-    function randomInteger(min: number, max: number): number {
-      return Math.floor(Math.random() * (max - min + 1)) + min
-    }
+const skip = ref(true)
+const currentGuess = ref('')
+const buttonText = ref('SKIP')
 
-    this.endDelay = this.time || 0
-    this.startTime = this.id === CLUES.length ? 0 : randomInteger(209 * 0.1, 209 * 0.9)
-  },
-  methods: {
-    play() {
-      //eventBus.$emit('playSong', { startTime: this.startTime, endDelay: this.endDelay })
-      this.playerStore.setStartTime(this.startTime)
-      this.playerStore.setEndDelay(this.endDelay)
-      this.playerStore.togglePlaying()
+const isDisabled = ref(false)
+const hasGuessed = ref(false)
+const isSkipped = ref(false)
+const isWrong = ref(false)
+const isCorrect = ref(false)
 
-      this.progress = 0
-      //this.opacity = 0.3
-      if (raf) cancelAnimationFrame(raf) //code taken from https://github.com/VilleOlof/vyletponlde/blob/main/frontend/src/lib/AudioCard.svelte
-      const duration = this.time! * 1000
-      const startTime = performance.now()
-      const tick = (time: number) => {
-        const elapsed = time - startTime
-        if (elapsed > duration) {
-          this.progress = 1
-          // this.opacity = 0.3 - (elapsed - duration) / 1000;
-          // if (this.opacity <= 0) {
-          //   this.opacity = 0
-          //   return
-          // }
-          raf = requestAnimationFrame(tick)
-          return
-        }
-        this.progress = elapsed / duration
-        raf = requestAnimationFrame(tick)
-      }
-      raf = requestAnimationFrame(tick)
-    },
-    submit() {
-      console.log('Guess:', this.currentGuess)
-      this.hasGuessed = true
-      if (this.skip) {
-        this.isSkipped = true
-        this.currentGuess = 'SKIPPED'
-      } else if (this.currentGuess === 'Deletee') {
-        this.isCorrect = true
-      } else {
-        this.isWrong = true
-      }
-    },
-    onGuessChange(event: Event) {
-      const target = event.target as HTMLInputElement
-      const value = target.value
-      if (value.length !== 0) {
-        this.buttonText = 'SUBMIT'
-        this.skip = false
-      } else {
-        this.buttonText = 'SKIP'
-        this.skip = true
-      }
-    },
-  },
+onMounted(() => {
+  function randomInteger(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
+  endDelay.value = props.time || 0
+  startTime.value = props.id === CLUES.length ? 0 : randomInteger(209 * 0.1, 209 * 0.9)
 })
+
+const play = () => {
+  playerStore.setStartTime(startTime.value)
+  playerStore.setEndDelay(endDelay.value)
+  playerStore.togglePlaying()
+
+  progress.value = 0
+  //this.opacity = 0.3
+  if (raf) cancelAnimationFrame(raf) //code taken from https://github.com/VilleOlof/vyletponlde/blob/main/frontend/src/lib/AudioCard.svelte
+  const duration = (props.time ?? 0) * 1000
+  const start = performance.now()
+  const tick = (time: number) => {
+    const elapsed = time - start
+    if (elapsed > duration) {
+      progress.value = 1
+      // this.opacity = 0.3 - (elapsed - duration) / 1000;
+      // if (this.opacity <= 0) {
+      //   this.opacity = 0
+      //   return
+      // }
+      raf = requestAnimationFrame(tick)
+      return
+    }
+    progress.value = elapsed / duration
+    raf = requestAnimationFrame(tick)
+  }
+  raf = requestAnimationFrame(tick)
+}
+
+const submit = () => {
+  console.log('Guess:', currentGuess)
+  hasGuessed.value = true
+  if (skip.value) {
+    isSkipped.value = true
+    currentGuess.value = 'SKIPPED'
+  } else if (currentGuess.value === 'Deletee') {
+    isCorrect.value = true
+  } else {
+    isWrong.value = true
+  }
+}
+
+const onGuessChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+  if (value.length !== 0) {
+    buttonText.value = 'SUBMIT'
+    skip.value = false
+  } else {
+    buttonText.value = 'SKIP'
+    skip.value = true
+  }
+}
 </script>
 
 <style scoped>
