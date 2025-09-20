@@ -1,10 +1,6 @@
 import { Router } from 'express'
-import supabase from '../database/databaseClient.ts'
-import { STARTING_DATE } from '../config.ts'
 import songs from '../songs.ts'
-import { HistoryRow } from '../types.ts'
 import { getHistoryByDay, getSongName } from '../database/history.ts'
-import { PostgrestError } from '@supabase/supabase-js'
 
 const router = Router()
 
