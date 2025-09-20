@@ -1,11 +1,13 @@
-import express from 'express'
+import express, { Router } from 'express'
 import serverless from 'serverless-http'
 import songs from '../../backend/songs.ts'
 import { getHistoryByDay, getSongName } from '../../backend/database/history.ts'
 
 const api = express()
 
-api.get('/api/days/:day/songs/:song/id', async (req, res) => {
+const router = Router()
+
+router.get('/days/:day/songs/:song/id', async (req, res) => {
   const day = +req.params.day
   const song = +req.params.song
 
@@ -19,7 +21,7 @@ api.get('/api/days/:day/songs/:song/id', async (req, res) => {
   }
 })
 
-api.get('/api/days/:day/songs/:song/info', async (req, res) => {
+router.get('/days/:day/songs/:song/info', async (req, res) => {
   const day = +req.params.day
   const song = +req.params.song
 
@@ -32,7 +34,7 @@ api.get('/api/days/:day/songs/:song/info', async (req, res) => {
   }
 })
 
-api.get('/api/days/:day/songs/:song/guesses', async (req, res) => {
+router.get('/days/:day/songs/:song/guesses', async (req, res) => {
   const day = +req.params.day
   const song = +req.params.song
   const guess = req.query.guess
@@ -47,7 +49,7 @@ api.get('/api/days/:day/songs/:song/guesses', async (req, res) => {
   }
 })
 
-api.get('/api/days/:day/clues', async (req, res) => {
+router.get('/api/days/:day/clues', async (req, res) => {
   const day = +req.params.day
 
   const selectArguments = `
@@ -71,5 +73,7 @@ api.get('/api/days/:day/clues', async (req, res) => {
     return res.status(404).send('Clues not found')
   }
 })
+
+api.use('/api', router)
 
 export const handler = serverless(api)
