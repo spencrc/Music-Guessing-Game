@@ -1,5 +1,5 @@
 <template>
-  <h1 id="title">DRAINEDLE</h1>
+  <h1 id="title">DRAIN GANGLE</h1>
   <div id="author-info">
     <h2>THE DAILY DRAIN GANG SONG GUESSING GAME</h2>
     <p>by <a href="https://github.com/spencrc">spencrc</a></p>
