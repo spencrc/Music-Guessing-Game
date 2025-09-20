@@ -26,7 +26,7 @@ export const getSongName = async (day: number, song: number): Promise<string> =>
   try {
     const data = (await getHistoryByDay(day)) as HistoryRow
     return data[`song_${song}`]
-  } catch (err) {
+  } catch {
     throw new Error(`No song ${song} found for day ${day}!`)
   }
 }

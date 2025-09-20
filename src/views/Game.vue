@@ -11,7 +11,7 @@
     <p>4</p>
     <p>5</p>
   </div>
-  <ClueCard v-for="(clue, index) in CLUES" :label="clue.label" :time="clue.time" :id="index + 1" />
+  <ClueCard v-for="(clue, index) in CLUES" :key="index" :label="clue.label" :time="clue.time" :id="index + 1" />
   <YouTubePlayer />
 </template>
 

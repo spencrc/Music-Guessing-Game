@@ -9,7 +9,7 @@ const randomInteger = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default async (req: Request) => {
+export default async () => {
   const songNames = Object.keys(songs)
   const pickedSongs = songNames.sort(() => Math.random() - 0.5).slice(0, 5)
   const values = { day: new Date() } as HistoryRow
@@ -27,7 +27,7 @@ export default async (req: Request) => {
     }
   }
 
-  const { data, error } = await databaseClient.from('history').insert([values])
+  const { error } = await databaseClient.from('history').insert([values])
 
   if (error) {
     console.error('Database error:', error)
