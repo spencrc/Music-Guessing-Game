@@ -23,7 +23,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { CLUES } from '@/config'
-import eventBus from '@/event-bus'
 import { usePlayerStore } from '@/stores/player'
 
 let raf: number | null = null

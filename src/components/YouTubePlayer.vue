@@ -4,7 +4,6 @@
 
 <script setup lang="ts">
 import YouTube from 'vue3-youtube'
-import eventBus from '@/event-bus'
 import { ref, onBeforeUnmount, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 
@@ -47,7 +46,7 @@ const onReady = async () => {
     //eventBus.$on('playSong', handlePlaySong)
     watch(
       () => playerStore.playing,
-      (newValue, oldValue) => {
+      () => {
         handlePlaySong(playerStore.startTime, playerStore.endDelay)
       },
     )
@@ -57,7 +56,6 @@ const onReady = async () => {
 }
 
 onBeforeUnmount(() => {
-  eventBus.$off('playSong')
   if (endTimeout) clearTimeout(endTimeout)
 })
 </script>
