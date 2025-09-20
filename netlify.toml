@@ -2,7 +2,6 @@
   functions = "netlify/functions"
 [functions]
   included_files = ["backend/routes/*"]
-  external_node_modules = ["express", "serverless-http"]
   node_bundler = "esbuild"
 [[redirects]]
   force = true
