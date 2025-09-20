@@ -49,7 +49,7 @@ router.get('/days/:day/songs/:song/guesses', async (req, res) => {
   }
 })
 
-router.get('/api/days/:day/clues', async (req, res) => {
+router.get('/days/:day/clues', async (req, res) => {
   const day = +req.params.day
 
   const selectArguments = `
