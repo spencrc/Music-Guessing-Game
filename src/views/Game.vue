@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { CLUES } from '@/config'
+import ClueCard from '@/components/ClueCard.vue'
+import YouTubePlayer from '@/components/YouTubePlayer.vue'
+</script>
+
 <template>
   <div id="game-links">
     <router-link to="/archive">ARCHIVE</router-link>
@@ -14,22 +20,6 @@
   <ClueCard v-for="(clue, index) in CLUES" :key="index" :label="clue.label" :time="clue.time" :id="index + 1" />
   <YouTubePlayer />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { CLUES } from '@/config'
-import ClueCard from '@/components/ClueCard.vue'
-import YouTubePlayer from '@/components/YouTubePlayer.vue'
-
-export default defineComponent({
-  components: { ClueCard, YouTubePlayer },
-  data() {
-    return {
-      CLUES,
-    }
-  },
-})
-</script>
 
 <style scoped>
 #progress {
