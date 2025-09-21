@@ -1,0 +1,10 @@
+{
+  "starting_date": "2025-09-08",
+  "num_songs": 5,
+  "num_clues_per_song": 3,
+  "clues": [
+    { "label": "0.5 seconds", "time": 0.5 },
+    { "label": "1 second", "time": 1 },
+    { "label": "Start of song", "time": 2.5 }
+  ]
+}

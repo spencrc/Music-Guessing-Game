@@ -13,33 +13,34 @@
   </div>
   <div class="container" v-show="!playerLoading">
     <ClueCard
-      v-for="(clue, index) in CLUES"
+      v-for="(clue, index) in clues"
       :key="index"
       :label="clue.label"
       :time="clue.time"
-      :clue="index === 2 ? 0 : clues[round * 3 + index]"
+      :startingTime="index === 2 ? 0 : startingTimes[round * 3 + index]"
       :correctGuess="songsNames[round]"
-      :class="{ disabled: currentClue < index }"
+      :class="{ disabled: gameStore.currentClue < index }"
     />
     <YouTubePlayer v-if="songIds[round]" :id="songIds[round]" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { CLUES } from '@/config'
+import { clues } from '../../config.json'
 import ClueCard from '@/components/ClueCard.vue'
 import YouTubePlayer from '@/components/YouTubePlayer.vue'
 import { onMounted, ref, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useGameStore } from '@/stores/game'
 
 const playerStore = usePlayerStore()
+const gameStore = useGameStore()
 
 const songsNames = ref(new Array<string>())
 const songIds = ref(new Array<string>())
-const clues = ref(new Array<number>())
+const startingTimes = ref(new Array<number>())
 const playerLoading = ref(true)
 const round = ref(0)
-const currentClue = ref(0)
 
 interface Song {
   name: string
@@ -53,7 +54,7 @@ onMounted(async () => {
 
     songsNames.value = data.dailySongs.map((song: Song) => song.name)
     songIds.value = data.dailySongs.map((song: Song) => song.id)
-    clues.value = data.dailyClues
+    startingTimes.value = data.dailyClues
 
     watch(
       () => playerStore.isLoading,
@@ -61,7 +62,6 @@ onMounted(async () => {
         playerLoading.value = false
       },
     )
-    console.log(songIds.value, songsNames.value, clues.value)
   } catch (err) {
     console.error(err)
   }

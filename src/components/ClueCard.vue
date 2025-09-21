@@ -24,13 +24,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useGameStore } from '@/stores/game'
 
 const playerStore = usePlayerStore()
+const gameStore = useGameStore()
 
 const props = defineProps<{
   label?: string
   time?: number
-  clue?: number
+  startingTime?: number
   correctGuess?: string
 }>()
 
@@ -61,7 +63,7 @@ onMounted(() => {
 })
 
 const play = () => {
-  playerStore.setStartTime(props.clue ?? 0)
+  playerStore.setStartTime(props.startingTime ?? 0)
   playerStore.setEndDelay(props.time ?? 0)
   playerStore.incrementPlayCount()
 
@@ -98,6 +100,7 @@ const submit = async () => {
   } else {
     isWrong.value = true
   }
+  gameStore.incrementCurrentClue()
 }
 
 const onGuessChange = (event: Event) => {

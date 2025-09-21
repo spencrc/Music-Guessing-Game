@@ -1,9 +1,14 @@
-import { STARTING_DATE } from '../config.ts'
+import { starting_date } from '../../config.json'
 import databaseClient from './databaseClient.ts'
-import { HistoryRow } from '../types.ts'
+
+export interface HistoryRow {
+  day: Date
+  [key: `song_${number}`]: string
+  [key: `clue_${number}_start`]: number
+}
 
 const getTargetDateISO = (day: number): string => {
-  const targetDate = new Date(STARTING_DATE)
+  const targetDate = new Date(starting_date)
   targetDate.setDate(targetDate.getDate() + day)
   return targetDate.toISOString().split('T')[0]
 }
@@ -20,13 +25,4 @@ export const getHistoryByDay = async (day: number, selectArguments: string = '*'
   if (error) throw new Error(`Supabase error: ${error.message}`)
 
   return data
-}
-
-export const getSongName = async (day: number, song: number): Promise<string> => {
-  try {
-    const data = (await getHistoryByDay(day)) as HistoryRow
-    return data[`song_${song}`]
-  } catch {
-    throw new Error(`No song ${song} found for day ${day}!`)
-  }
 }
