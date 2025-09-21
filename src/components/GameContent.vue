@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <ClueList v-if="!playerStore.isLoading" :startingTimes="startingTimes" :songNames="songsNames" />
-    <YouTubePlayer v-if="songIds[gameStore.round]" :id="songIds[gameStore.round]" />
+    <YouTubePlayer v-if="songIds[gameStore.round]" v-show="gameStore.isRoundOver" :id="songIds[gameStore.round]" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game'
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import ClueList from './ClueList.vue'
 import YouTubePlayer from '@/components/YouTubePlayer.vue'
@@ -35,5 +35,9 @@ onMounted(async () => {
   } catch (err) {
     console.error(err)
   }
+})
+
+onBeforeUnmount(() => {
+  gameStore.reset()
 })
 </script>
