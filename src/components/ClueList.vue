@@ -4,9 +4,9 @@
     :key="index"
     :label="clue.label"
     :time="clue.time"
-    :startingTime="index === 2 ? 0 : startingTimes[gameStore.round * num_clues_per_song + index]"
+    :startingTime="index === 2 ? 0 : startingTimes[gameStore.round * (num_clues_per_song - 1) + index]"
     :correctGuess="songNames[gameStore.round]"
-    :class="{ disabled: gameStore.currentClue < index }"
+    :class="{ disabled: gameStore.currentClue < index && !gameStore.isRoundOver }"
   />
 </template>
 
