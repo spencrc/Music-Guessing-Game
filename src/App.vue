@@ -4,20 +4,8 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="container">
     <Header />
     <RouterView />
   </div>
 </template>
-
-<style scoped>
-.app-container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-</style>

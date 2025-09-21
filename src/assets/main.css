@@ -31,3 +31,25 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.container {
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+button {
+  color: black;
+  background-color: transparent;
+  border: 0px solid transparent;
+  font-size: 1.5rem;
+}
+
+button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
