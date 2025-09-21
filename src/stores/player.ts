@@ -7,8 +7,8 @@ export const usePlayerStore = defineStore('player', () => {
   const startTime = ref(0)
   const endDelay = ref(0)
 
-  const finishLoading = () => {
-    isLoading.value = false
+  const setLoadingState = (loading: boolean) => {
+    isLoading.value = loading
   }
 
   const incrementPlayCount = () => {
@@ -23,5 +23,5 @@ export const usePlayerStore = defineStore('player', () => {
     endDelay.value = delay
   }
 
-  return { isLoading, playCount, startTime, endDelay, finishLoading, incrementPlayCount, setStartTime, setEndDelay }
+  return { isLoading, playCount, startTime, endDelay, setLoadingState, incrementPlayCount, setStartTime, setEndDelay }
 })

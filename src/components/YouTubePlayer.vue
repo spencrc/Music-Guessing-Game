@@ -36,6 +36,13 @@ const handlePlaySong = (startTime: number, endDelay?: number) => {
   }, endDelay * 1000)
 }
 
+watch(
+  () => playerStore.playCount,
+  () => {
+    if (!playerStore.isLoading) handlePlaySong(playerStore.startTime, playerStore.endDelay)
+  },
+)
+
 const onReady = async () => {
   player = youtube.value!
 
@@ -43,18 +50,12 @@ const onReady = async () => {
   player.playVideo()
   player.pauseVideo()
 
-  playerStore.finishLoading()
-
-  watch(
-    () => playerStore.playCount,
-    () => {
-      handlePlaySong(playerStore.startTime, playerStore.endDelay)
-    },
-  )
+  playerStore.setLoadingState(false)
 }
 
 onBeforeUnmount(() => {
   if (endTimeout) clearTimeout(endTimeout)
+  playerStore.setLoadingState(true)
 })
 </script>
 
