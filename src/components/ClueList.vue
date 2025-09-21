@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { clues, num_clues_per_song } from '../../config.json'
 import { useGameStore } from '@/stores/game'
-import ClueCard from './ClueCard.vue'
+import ClueCard from '@/components/ClueCard.vue'
 
 defineProps<{
   startingTimes: number[]

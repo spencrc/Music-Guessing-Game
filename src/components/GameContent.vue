@@ -7,9 +7,9 @@
 
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
-import ClueList from './ClueList.vue'
+import ClueList from '@/components/ClueList.vue'
 import YouTubePlayer from '@/components/YouTubePlayer.vue'
 
 const playerStore = usePlayerStore()
@@ -26,7 +26,7 @@ interface Song {
 
 onMounted(async () => {
   try {
-    const response = await fetch('/api/days/0')
+    const response = await fetch(`/api/days/${gameStore.day}`)
     const data = await response.json()
 
     songsNames.value = data.dailySongs.map((song: Song) => song.name)
@@ -35,9 +35,5 @@ onMounted(async () => {
   } catch (err) {
     console.error(err)
   }
-})
-
-onBeforeUnmount(() => {
-  gameStore.reset()
 })
 </script>

@@ -6,6 +6,7 @@ export const useGameStore = defineStore('game', () => {
   const round = ref(0)
   const currentClue = ref(0)
   const isRoundOver = ref(false)
+  const day = ref(0)
 
   const incrementRound = () => {
     isRoundOver.value = false
@@ -30,5 +31,9 @@ export const useGameStore = defineStore('game', () => {
     currentClue.value = 0
   }
 
-  return { round, currentClue, isRoundOver, incrementRound, incrementCurrentClue, finishRound, reset }
+  const setDay = (newDay: number) => {
+    day.value = newDay
+  }
+
+  return { round, currentClue, isRoundOver, day, incrementRound, incrementCurrentClue, finishRound, reset, setDay }
 })

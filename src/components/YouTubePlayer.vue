@@ -1,7 +1,7 @@
 <template>
   <div>
     <YouTube src="" width="250" height="250" @ready="onReady" ref="youtube" />
-    <button @click="nextRound">(SONG 2) ></button>
+    <button @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
   </div>
 </template>
 

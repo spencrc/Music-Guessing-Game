@@ -1,18 +1,19 @@
 <template>
   <div id="game-links">
     <router-link to="/archive">ARCHIVE</router-link>
-    <p>DAY #{{ day }}</p>
+    <p>DAY #{{ String(gameStore.day).padStart(3, '0') }}</p>
     <router-link to="/">HELP</router-link>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { starting_date } from '../../config.json'
+import { useGameStore } from '@/stores/game'
 
-const diffMs = new Date().getTime() - new Date(starting_date).getTime()
+const gameStore = useGameStore()
 
-const day = ref(String(Math.floor(diffMs / (1000 * 60 * 60 * 24))).padStart(3, '0'))
+//const diffMs = new Date().getTime() - new Date(starting_date).getTime()
+
+//const day = ref(String(Math.floor(diffMs / (1000 * 60 * 60 * 24))).padStart(3, '0'))
 </script>
 
 <style>
