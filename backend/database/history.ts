@@ -30,5 +30,3 @@ export const getSongName = async (day: number, song: number): Promise<string> =>
     throw new Error(`No song ${song} found for day ${day}!`)
   }
 }
-
-export default getHistoryByDay
