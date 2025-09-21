@@ -1,5 +1,5 @@
 <template>
-  <div class="clue" :class="{ disabled: isDisabled }">
+  <div class="clue">
     <div class="progress-fill" :style="{ transform: `scaleX(${progress})`, opacity: opacity }"></div>
     <div class="features">
       <button class="play" @click="play">PLAY</button>
@@ -45,7 +45,6 @@ const skip = ref(true)
 const currentGuess = ref('')
 const buttonText = ref('(SKIP)')
 
-const isDisabled = ref(false)
 const hasGuessed = ref(false)
 const isSkipped = ref(false)
 const isWrong = ref(false)
