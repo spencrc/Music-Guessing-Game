@@ -2,12 +2,17 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const usePlayerStore = defineStore('player', () => {
-  const playing = ref(false)
+  const isLoading = ref(true)
+  const playCount = ref(0)
   const startTime = ref(0)
   const endDelay = ref(0)
 
-  const togglePlaying = () => {
-    playing.value = !playing.value
+  const finishLoading = () => {
+    isLoading.value = false
+  }
+
+  const incrementPlayCount = () => {
+    playCount.value++
   }
 
   const setStartTime = (time: number) => {
@@ -18,5 +23,5 @@ export const usePlayerStore = defineStore('player', () => {
     endDelay.value = delay
   }
 
-  return { playing, startTime, endDelay, togglePlaying, setStartTime, setEndDelay }
+  return { isLoading, playCount, startTime, endDelay, finishLoading, incrementPlayCount, setStartTime, setEndDelay }
 })
