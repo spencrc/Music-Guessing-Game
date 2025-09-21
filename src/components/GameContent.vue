@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import ClueList from './ClueList.vue'
 import YouTubePlayer from '@/components/YouTubePlayer.vue'
@@ -18,19 +18,11 @@ const gameStore = useGameStore()
 const songsNames = ref(new Array<string>())
 const songIds = ref(new Array<string>())
 const startingTimes = ref(new Array<number>())
-const playerLoading = ref(true)
 
 interface Song {
   name: string
   id: string
 }
-
-watch(
-  () => playerStore.isLoading,
-  () => {
-    playerLoading.value = false
-  },
-)
 
 onMounted(async () => {
   try {
