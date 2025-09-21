@@ -1,7 +1,7 @@
 <template>
   <div>
     <YouTube src="" width="250" height="250" @ready="onReady" ref="youtube" />
-    <button>(SONG 2) ></button>
+    <button @click="nextRound">(SONG 2) ></button>
   </div>
 </template>
 
@@ -9,8 +9,10 @@
 import YouTube from 'vue3-youtube'
 import { ref, onBeforeUnmount, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useGameStore } from '@/stores/game'
 
 const playerStore = usePlayerStore()
+const gameStore = useGameStore()
 
 const props = defineProps<{ id: string }>()
 
@@ -43,6 +45,16 @@ watch(
   },
 )
 
+watch(
+  () => gameStore.isRoundOver,
+  () => {
+    if (!gameStore.isRoundOver) {
+      player.loadVideoById(props.id)
+      player.pauseVideo()
+    }
+  },
+)
+
 const onReady = async () => {
   player = youtube.value!
 
@@ -51,6 +63,10 @@ const onReady = async () => {
   player.pauseVideo()
 
   playerStore.setLoadingState(false)
+}
+
+const nextRound = () => {
+  if (gameStore.isRoundOver) gameStore.incrementRound()
 }
 
 onBeforeUnmount(() => {
@@ -70,7 +86,6 @@ div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  visibility: hidden;
 }
 
 button {
