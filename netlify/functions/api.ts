@@ -1,79 +1,44 @@
-import express, { Router } from 'express'
+import express from 'express'
 import serverless from 'serverless-http'
 import songs from '../../backend/songs.ts'
-import { getHistoryByDay, getSongName } from '../../backend/database/history.ts'
+import { getHistoryByDay } from '../../backend/database/history.ts'
 
 const api = express()
 
-const router = Router()
+const NUM_SONGS = 5
+const NUM_CLUES = NUM_SONGS * 2
 
-router.get('/days/:day/songs/:song/id', async (req, res) => {
+const songsSelectArgument = Array.from({ length: NUM_SONGS }, (_, i) => `song_${i + 1}`)
+const cluesSelectArgument = Array.from({ length: NUM_CLUES }, (_, i) => `clue_${i + 1}_start`)
+const selectArguments = [...songsSelectArgument, ...cluesSelectArgument].join(', ')
+
+api.get('/api/days/:day', async (req, res) => {
   const day = +req.params.day
-  const song = +req.params.song
-
-  try {
-    const songName = await getSongName(day, song)
-    const id = songs[songName].id
-    res.send(id)
-  } catch (err) {
-    console.error(err)
-    res.status(404).send('Song not found')
-  }
-})
-
-router.get('/days/:day/songs/:song/info', async (req, res) => {
-  const day = +req.params.day
-  const song = +req.params.song
-
-  try {
-    const songName = await getSongName(day, song)
-    res.send(songName)
-  } catch (err) {
-    console.error(err)
-    res.status(404).send('Song not found')
-  }
-})
-
-router.get('/days/:day/songs/:song/guesses', async (req, res) => {
-  const day = +req.params.day
-  const song = +req.params.song
-  const guess = req.query.guess
-
-  try {
-    const songName = await getSongName(day, song)
-    const isCorrect = guess === songName
-    res.send(isCorrect)
-  } catch (err) {
-    console.error(err)
-    res.status(404).send('Song not found')
-  }
-})
-
-router.get('/days/:day/clues', async (req, res) => {
-  const day = +req.params.day
-
-  const selectArguments = `
-        clue_1_start,
-        clue_2_start,
-        clue_3_start,
-        clue_4_start,
-        clue_5_start,
-        clue_6_start,
-        clue_7_start,
-        clue_8_start,
-        clue_9_start,
-        clue_10_start
-    `
 
   try {
     const data = await getHistoryByDay(day, selectArguments)
-    res.send(data)
+    if (!data) {
+      return res.status(404).send('History row not found')
+    }
+
+    const dailySongs = new Array<{ name: string; id: string }>()
+    const dailyClues = new Array<number>()
+
+    for (let i = 1; i <= NUM_SONGS; i++) {
+      const name = data[`song_${i}`]
+      const id = songs[name].id
+      dailySongs.push({ name, id })
+    }
+
+    for (let i = 1; i <= NUM_CLUES; i++) {
+      dailyClues.push(data[`clue_${i}_start`])
+    }
+
+    res.send({ dailySongs, dailyClues })
   } catch (err) {
-    console.error(`No clues found for day ${day}! ${err}`)
-    return res.status(404).send('Clues not found')
+    console.error(`Error fetching history row for day ${day}! ${err}`)
+    return res.status(500).send('Internal server error')
   }
 })
-
-api.use('/api', router)
 
 export const handler = serverless(api)
