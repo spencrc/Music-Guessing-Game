@@ -1,5 +1,8 @@
 <template>
-  <YouTube src="" width="300" height="300" @ready="onReady" ref="youtube" />
+  <div>
+    <YouTube src="" width="250" height="250" @ready="onReady" ref="youtube" />
+    <button>(SONG 2) ></button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -9,7 +12,8 @@ import { usePlayerStore } from '@/stores/player'
 
 const playerStore = usePlayerStore()
 
-const videoId = ref('ydpHpB_IKiw')
+const props = defineProps<{ id: string }>()
+
 const youtube = ref<InstanceType<typeof YouTube> | null>(null)
 
 let player: InstanceType<typeof YouTube>
@@ -33,29 +37,42 @@ const handlePlaySong = (startTime: number, endDelay?: number) => {
 }
 
 const onReady = async () => {
-  try {
-    player = youtube.value!
+  player = youtube.value!
 
-    const response = await fetch('/api/days/0/songs/1/id')
-    const id = await response.text()
+  player.loadVideoById(props.id)
+  player.playVideo()
+  player.pauseVideo()
 
-    player.loadVideoById(id)
-    player.playVideo()
-    player.pauseVideo()
+  playerStore.finishLoading()
 
-    //eventBus.$on('playSong', handlePlaySong)
-    watch(
-      () => playerStore.playing,
-      () => {
-        handlePlaySong(playerStore.startTime, playerStore.endDelay)
-      },
-    )
-  } catch (err) {
-    console.error(err)
-  }
+  watch(
+    () => playerStore.playCount,
+    () => {
+      handlePlaySong(playerStore.startTime, playerStore.endDelay)
+    },
+  )
 }
 
 onBeforeUnmount(() => {
   if (endTimeout) clearTimeout(endTimeout)
 })
 </script>
+
+<style scoped>
+div {
+  background-color: #e6e3e3;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  visibility: hidden;
+}
+
+button {
+  align-self: flex-end;
+}
+</style>
