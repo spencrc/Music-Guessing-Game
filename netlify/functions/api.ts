@@ -2,14 +2,14 @@ import express from 'express'
 import serverless from 'serverless-http'
 import songs from '../../backend/songs.ts'
 import { getHistoryByDay } from '../../backend/database/history.ts'
+import { num_songs, num_clues_per_song } from '../../config.json'
 
 const api = express()
 
-const NUM_SONGS = 5
-const NUM_CLUES = NUM_SONGS * 2
+const num_clues = num_songs * (num_clues_per_song - 1)
 
-const songsSelectArgument = Array.from({ length: NUM_SONGS }, (_, i) => `song_${i + 1}`)
-const cluesSelectArgument = Array.from({ length: NUM_CLUES }, (_, i) => `clue_${i + 1}_start`)
+const songsSelectArgument = Array.from({ length: num_songs }, (_, i) => `song_${i + 1}`)
+const cluesSelectArgument = Array.from({ length: num_clues }, (_, i) => `clue_${i + 1}_start`)
 const selectArguments = [...songsSelectArgument, ...cluesSelectArgument].join(', ')
 
 api.get('/api/days/:day', async (req, res) => {
@@ -24,13 +24,13 @@ api.get('/api/days/:day', async (req, res) => {
     const dailySongs = new Array<{ name: string; id: string }>()
     const dailyClues = new Array<number>()
 
-    for (let i = 1; i <= NUM_SONGS; i++) {
+    for (let i = 1; i <= num_songs; i++) {
       const name = data[`song_${i}`]
       const id = songs[name].id
       dailySongs.push({ name, id })
     }
 
-    for (let i = 1; i <= NUM_CLUES; i++) {
+    for (let i = 1; i <= num_clues; i++) {
       dailyClues.push(data[`clue_${i}_start`])
     }
 
