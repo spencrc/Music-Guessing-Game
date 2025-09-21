@@ -3,7 +3,7 @@
     <div class="progress-fill" :style="{ transform: `scaleX(${progress})`, opacity: opacity }"></div>
     <div class="features">
       <button class="play" @click="play">PLAY</button>
-      <div class="input-frame" :class="{ wrong: isWrong, skipped: isSkipped, correct: isCorrect }">
+      <div class="input-frame" :class="{ wrong: isWrong, guessed: hasGuessed, correct: isCorrect }">
         <input
           v-model="currentGuess"
           class="current-guess"
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useGameStore } from '@/stores/game'
 
@@ -61,6 +61,27 @@ onMounted(() => {
   startTime.value = props.time === 2.5 ? 0 : randomInteger(209 * 0.1, 209 * 0.9)
 })
 
+watch(
+  () => gameStore.isRoundOver,
+  () => {
+    if (!gameStore.isRoundOver) {
+      hasGuessed.value = false
+      isSkipped.value = false
+      isCorrect.value = false
+      isWrong.value = false
+      currentGuess.value = ''
+      buttonText.value = '(SKIP)'
+      if (raf) {
+        cancelAnimationFrame(raf)
+        opacity.value = 0
+      }
+    } else {
+      if (currentGuess.value === '') currentGuess.value = ' '
+      hasGuessed.value = true
+    }
+  },
+)
+
 const play = () => {
   playerStore.setStartTime(props.startingTime ?? 0)
   playerStore.setEndDelay(props.time ?? 0)
@@ -91,13 +112,12 @@ const play = () => {
 
 const submit = async () => {
   hasGuessed.value = true
-  if (skip.value) {
-    isSkipped.value = true
-    currentGuess.value = 'SKIPPED'
-  } else if (currentGuess.value === props.correctGuess) {
+  if (currentGuess.value === props.correctGuess) {
     isCorrect.value = true
+    gameStore.finishRound()
   } else {
     isWrong.value = true
+    if (currentGuess.value === '') currentGuess.value = ' '
   }
   gameStore.incrementCurrentClue()
 }
@@ -158,8 +178,7 @@ const onGuessChange = (event: Event) => {
   align-items: center;
 }
 
-.input-frame.skipped {
-  background: rgba(0, 0, 0, 0.5);
+.input-frame.guessed {
   pointer-events: none;
 }
 
