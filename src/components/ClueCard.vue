@@ -33,7 +33,7 @@ const props = defineProps<{
   label?: string
   time?: number
   startingTime?: number
-  correctGuess?: string
+  correctGuess: string
 }>()
 
 const startTime = ref(0)
@@ -112,7 +112,7 @@ const play = () => {
 
 const submit = async () => {
   hasGuessed.value = true
-  if (currentGuess.value === props.correctGuess) {
+  if (currentGuess.value.toLowerCase() === props.correctGuess.toLowerCase()) {
     isCorrect.value = true
     gameStore.finishRound()
   } else {
