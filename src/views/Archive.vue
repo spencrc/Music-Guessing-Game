@@ -21,6 +21,7 @@ const daysDescending = ref(Array.from({ length: todaysNumber }, (_, i) => todays
 
 <style>
 ul {
+  margin: 0;
   list-style-type: none;
 }
 </style>
