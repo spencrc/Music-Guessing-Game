@@ -9,7 +9,7 @@
 import { useGameStore } from '@/stores/game'
 import { onMounted, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
-import ClueList from '@/components/ClueList.vue'
+import ClueList from '@/components/clue/ClueList.vue'
 import YouTubePlayer from '@/components/YouTubePlayer.vue'
 
 const playerStore = usePlayerStore()
