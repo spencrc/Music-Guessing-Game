@@ -19,9 +19,9 @@ const todaysNumber = getDayNumber(todaysDiffMs)
 const daysDescending = ref(Array.from({ length: todaysNumber }, (_, i) => todaysNumber - i))
 </script>
 
-<style>
+<style scoped>
 ul {
-  margin: 0;
+  padding: 0;
   list-style-type: none;
 }
 </style>
