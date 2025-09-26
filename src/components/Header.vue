@@ -10,6 +10,7 @@
 <style scoped>
 #title {
   font-size: 7rem;
+  text-align: center;
 }
 
 #author-info {
