@@ -1,7 +1,7 @@
 <template>
   <div>
     <YouTube src="" width="250" height="250" @ready="onReady" ref="youtube" />
-    <button @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
+    <button v-if="gameStore.isRoundOver" @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
   </div>
 </template>
 
