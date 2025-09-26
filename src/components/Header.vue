@@ -13,6 +13,10 @@
   text-align: center;
 }
 
+h2 {
+  align-items: center;
+}
+
 #author-info {
   display: flex;
   flex-direction: column;

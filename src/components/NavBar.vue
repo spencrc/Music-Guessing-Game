@@ -52,7 +52,7 @@ const open = ref(false)
   min-width: 300px; /* optional: prevent it from being too small on tiny screens */
   background: #e6e3e3;
   padding: 1.5rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
