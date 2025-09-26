@@ -1,6 +1,6 @@
 <template>
   <div>
-    <YouTube src="" width="250" height="250" @ready="onReady" ref="youtube" />
+    <YouTube src="" width="600" height="400" @ready="onReady" ref="youtube" />
     <button v-if="gameStore.isRoundOver" @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
   </div>
 </template>
@@ -22,7 +22,6 @@ let player: InstanceType<typeof YouTube>
 let endTimeout: ReturnType<typeof setTimeout> | null = null
 
 const handlePlaySong = (startTime: number, endDelay?: number) => {
-  player.pauseVideo()
   player.seekTo(startTime, true)
   player.playVideo()
 
@@ -35,6 +34,7 @@ const handlePlaySong = (startTime: number, endDelay?: number) => {
 
   endTimeout = setTimeout(() => {
     player.pauseVideo()
+    player.seekTo(startTime, true)
   }, endDelay * 1000)
 }
 
@@ -49,7 +49,7 @@ watch(
   () => gameStore.isRoundOver,
   () => {
     if (!gameStore.isRoundOver) {
-      player.loadVideoById(props.id)
+      player.loadVideoById(props.id, 0, 'small')
       player.pauseVideo()
     }
   },
@@ -59,8 +59,8 @@ const onReady = async () => {
   player = youtube.value!
 
   player.loadVideoById(props.id)
-  player.playVideo()
-  player.pauseVideo()
+  player.setVolume(100)
+  player.unMute()
 
   playerStore.setLoadingState(false)
 }
