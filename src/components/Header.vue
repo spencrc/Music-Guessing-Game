@@ -14,7 +14,7 @@
 }
 
 h2 {
-  align-items: center;
+  text-align: center;
 }
 
 #author-info {
