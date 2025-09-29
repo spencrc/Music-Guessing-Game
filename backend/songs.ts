@@ -22,7 +22,7 @@ export default {
   'Bloodveil/Stillborn': { a: 'B, E', id: 'JN6sfZJZYsk', d: 210 },
   Sugar: { a: 'B', id: 'OqzBxiiR2QE', d: 186 },
   'Wrist Cry': { a: 'B', id: 'Ug3g3F9gwGM', d: 235 },
-  Skin: { a: 'B', id: 'hOP_x9JK1', d: 216 },
+  Skin: { a: 'B', id: 'hOP_x9JK1-g', d: 216 },
   '7-Eleven': { a: 'B', id: 'ftUB2JvEImM', d: 164 },
   Butterfly: { a: 'B, T', id: '62tXF_7D0fs', d: 191 },
   MJ: { a: 'B, Y', id: '30dSFD6vqds', d: 245 },
