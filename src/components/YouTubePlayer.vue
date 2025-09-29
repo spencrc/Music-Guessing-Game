@@ -1,7 +1,10 @@
 <template>
   <div>
-    <YouTube src="" width="600" height="400" @ready="onReady" ref="youtube" />
-    <button v-if="gameStore.isRoundOver" @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
+    <YouTube src="" width="360" height="250" @ready="onReady" ref="youtube" />
+    <button v-if="gameStore.isRoundOver && gameStore.round + 1 >= num_songs" @click="gameStore.isGameOver = true">
+      VIEW RESULTS >
+    </button>
+    <button v-else-if="gameStore.isRoundOver" @click="nextRound">(SONG {{ gameStore.round + 2 }}) ></button>
   </div>
 </template>
 
@@ -10,6 +13,7 @@ import YouTube from 'vue3-youtube'
 import { ref, onBeforeUnmount, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useGameStore } from '@/stores/game'
+import { num_songs } from '../../config.json'
 
 const playerStore = usePlayerStore()
 const gameStore = useGameStore()
@@ -55,12 +59,13 @@ watch(
   },
 )
 
-const onReady = async () => {
+const onReady = () => {
   player = youtube.value!
 
   player.loadVideoById(props.id)
   player.setVolume(100)
   player.unMute()
+  player.pauseVideo()
 
   playerStore.setLoadingState(false)
 }
