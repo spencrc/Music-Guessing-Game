@@ -30,6 +30,7 @@ export const useGameStore = defineStore('game', () => {
 
   const reset = () => {
     isRoundOver.value = false
+    isGameOver.value = false
     round.value = 0
     currentClue.value = 0
     score.value = new Array<number>(num_songs)
